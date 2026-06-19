@@ -19,6 +19,7 @@ from core import ui_copy as C
 from core.config import confidence_band
 from core.counterfactual import unlock_hints
 from core.retrieval import select_candidates
+from core.rules_engine import determine
 from core.schemas import IntakeFacts
 from pipeline import run_pipeline
 
@@ -129,7 +130,37 @@ st.markdown("<div class='trust'>" + " &nbsp;·&nbsp; ".join(C.TRUST) + "</div>",
 with st.expander(C.HOW_TITLE):
     st.markdown(C.HOW_BODY)
 
-with st.expander(C.REDTEAM_TITLE):
+# Two "judge-bait" showcases in TABS (tabs persist across reruns, so the live widgets don't collapse).
+_show = st.tabs(["🔬 Eligibility Explorer", C.REDTEAM_TITLE])
+
+with _show[0]:
+    st.markdown(f"<span class='muted'>{C.EXPLORER_INTRO}</span>", unsafe_allow_html=True)
+    _e1, _e2 = st.columns([3, 2])
+    with _e1:
+        _inc = st.select_slider("Household income", options=C.EXPLORER_BANDS, value="moderate",
+                                format_func=lambda b: C.EXPLORER_BAND_LABEL[b], key="ex_income")
+        _need = st.selectbox("What you need", C.EXPLORER_NEEDS, key="ex_need")
+    with _e2:
+        _hh = st.slider("Household size", 1, 8, 3, key="ex_house")
+    _ef = IntakeFacts(language="en", need_type=_need, income_band=_inc, household_size=_hh, location="Anytown")
+    _eh = determine(_ef, select_candidates(_ef))
+    _nmay = sum(1 for h in _eh if h.status == "may_qualify")
+    st.markdown(
+        f"<div style='font-size:1.45rem;font-weight:800;color:var(--teal);margin:8px 0 2px'>"
+        f"✓ You may qualify for {_nmay} of {len(_eh)} options</div>",
+        unsafe_allow_html=True,
+    )
+    for h in _eh:
+        _cls = STATUS_CLASS.get(h.status, "grey")
+        st.markdown(
+            f"<div class='card {_cls}' style='padding:8px 14px;margin:6px 0'>"
+            f"<span class='badge {_cls}'>{esc(C.STATUS_LABEL.get(h.status, h.status))}</span> "
+            f"<b>{esc(h.program)}</b></div>",
+            unsafe_allow_html=True,
+        )
+    st.caption(C.EXPLORER_FOOT)
+
+with _show[1]:
     st.markdown(C.REDTEAM_INTRO)
     for _label, _kind, _payload in C.REDTEAM_CASES:
         if _kind == "scam":

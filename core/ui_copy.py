@@ -164,6 +164,16 @@ LIMITATIONS_TITLE = "What Lucid does NOT do"
 PILLS = ["🧠 AI reads your story", "⚙️ Rules decide — not the AI",
          "📎 Cited to official sources", "🛡️ Scam + injection safe", "🌐 Any language"]
 
+# ---- Eligibility Explorer (the wow): drag facts, watch the deterministic engine recompute live ----
+EXPLORER_INTRO = ("Ask a chatbot the same question twice and you can get two different answers. Lucid's "
+                  "answer is **deterministic, instant, and cited** — a rules engine decides, not a guessing "
+                  "AI. Drag below and watch programs open the moment you cross an official income limit.")
+EXPLORER_FOOT = "Same inputs → same answer, every time. *That's* why eligibility here can't be hallucinated."
+EXPLORER_NEEDS = ["rental_assistance", "eviction_help", "utility_assistance", "emergency", "tenant_rights"]
+EXPLORER_BANDS = ["above_moderate", "moderate", "low", "very_low"]
+EXPLORER_BAND_LABEL = {"above_moderate": "Higher", "moderate": "Moderate", "low": "Low", "very_low": "Very low"}
+
+
 # ---- Red-team panel (the cyber edge): runs LIVE deterministic attacks, even offline ----
 REDTEAM_TITLE = "🛡️ See Lucid defend itself — we red-team our own AI"
 REDTEAM_INTRO = ("We're cybersecurity students, so we attacked Lucid before the judges could. "
