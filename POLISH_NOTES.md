@@ -66,3 +66,15 @@ Judges noted: an AI Principal Engineer + a Booz-Allen technologist. The rubric *
 - **Files:** `core/schemas.py` (enum), `core/rules_engine.py` (`_INCOME_RANK`), `agents/intake.py` (income-mapping prompt), `core/ui_copy.py` (a "Higher income" dropdown option), and eval scenario `rent-en-moderate` ($250k) re-labelled `above_moderate`.
 - **Why it impresses judges:** strengthens the Responsible-AI story — Lucid doesn't just say "yes" to everyone; it correctly and explicitly tells people when they *don't* qualify. (This was the gap surfaced during testing.)
 - Verified: all 6 smoke suites pass; eval regression stays 100% (23/23) with the new band; nothing else changed.
+
+---
+
+## 7. Warm redesign + "win-level" features (user-directed)
+**Visual:** switched to a **warm, premium, light** theme (`.streamlit/config.toml` base=light, cream `#faf7f2` canvas, terracotta `#c2613f` CTAs) with an **editorial serif hero** (Georgia), soft rounded white cards with hover lift, warm pills/stepper. Reads as *caring and trustworthy* — the right tone for a stressed, vulnerable user (and for Impact/Social-Impact judges). Verified live: cream bg, serif hero, terracotta buttons, zero exceptions.
+
+**New features:**
+- 🌟 **Counterfactual explanations (`core/counterfactual.py`)** — "Section 8 opens up if your household income is *very low* or below." Computed by re-running the *deterministic* engine, so it's exact — a genuine edge over any LLM (a chatbot can't reliably state the counterfactual that flips its own answer). Shown as a warm `.cf` box in Step 3.
+- 🔊 **Voice / listen** — a client-side `SpeechSynthesis` button reads the answer aloud **in the user's language** (free, offline, accessibility win for low-literacy / visually-impaired users).
+- 📊 **Confidence calibration** in the eval — bins scenarios by confidence band and shows low→escalates 100%, high→11% (the 11% is deliberate equity routing). Confidence is *meaningful*, shown honestly.
+- 🛡️ **Adversarial robustness score** — a single combined "caught 5/7 planted attacks (71%)" headline in the eval.
+- Verified: compile clean, all 6 smoke suites pass, eval regression 100%, counterfactual returns correct thresholds.

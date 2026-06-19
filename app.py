@@ -8,15 +8,31 @@ just renders run_intake()/run_pipeline().
 from __future__ import annotations
 
 import html
+import json
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 from agents.guardian import LIMITATIONS, detect_injection, detect_scam
 from agents.intake import run_intake
 from core import ui_copy as C
 from core.config import confidence_band
+from core.counterfactual import unlock_hints
+from core.retrieval import select_candidates
 from core.schemas import IntakeFacts
 from pipeline import run_pipeline
+
+
+def listen_button(text: str, lang: str) -> None:
+    """Read the answer aloud, client-side (browser SpeechSynthesis) — free, offline, any language."""
+    payload, lng = json.dumps(text or ""), json.dumps(lang or "en")
+    components.html(
+        "<button onclick=\"(function(){var u=new SpeechSynthesisUtterance(" + payload + ");"
+        "u.lang=" + lng + ";window.speechSynthesis.cancel();window.speechSynthesis.speak(u);})()\" "
+        "style=\"font:600 13.5px system-ui;background:#0f6b5f;color:#fff;border:0;border-radius:10px;"
+        "padding:8px 15px;cursor:pointer;box-shadow:0 2px 6px rgba(15,107,95,.25)\">🔊 Listen to this</button>",
+        height=48,
+    )
 
 st.set_page_config(page_title=C.PAGE_TITLE, page_icon="🧭", layout="centered")
 
@@ -25,48 +41,49 @@ st.markdown(
     """
     <style>
       :root{
-        --calm:#0b6e6e; --calm2:#0e8a8a; --warm:#d9663b;
-        --ink:#1f2937; --muted:#6b7280;
-        --good:#1b8a5a; --amber:#c98a00; --bad:#c0392b;
+        --ink:#2c2722; --muted:#7a7166; --line:#e7ddd0;
+        --clay:#c2613f; --clay-d:#a84f30; --teal:#0f6b5f;
+        --good:#2e7d56; --amber:#b07a18; --bad:#c0392b;
       }
-      .hero h1{margin:0;font-size:2.3rem;font-weight:800;letter-spacing:-.6px;
-        background:linear-gradient(92deg,#0b6e6e,#0e8a8a 55%,#d9663b);
-        -webkit-background-clip:text;background-clip:text;color:transparent;}
-      .hero .tag{color:var(--muted);margin-top:3px;font-size:1.04rem;}
-      .pills{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px;}
-      .pill{font-size:.73rem;font-weight:600;color:var(--calm);background:rgba(11,110,110,.08);
-        border:1px solid rgba(11,110,110,.18);padding:3px 11px;border-radius:999px;}
-      .trust{color:var(--muted);font-size:.82rem;margin:8px 0 2px;}
-      .journey{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:16px 0 6px;}
-      .jstep{font-size:.8rem;color:var(--muted);background:rgba(127,127,127,.07);
-        padding:5px 14px;border-radius:999px;border:1px solid rgba(127,127,127,.16);transition:all .2s;}
-      .jstep.active{color:#fff;border-color:transparent;
-        background:linear-gradient(92deg,#0b6e6e,#0e8a8a);box-shadow:0 3px 10px rgba(11,110,110,.28);}
-      .jstep.done{color:var(--calm);border-color:rgba(11,110,110,.35);background:rgba(11,110,110,.06);}
-      .jsep{color:#cbd5e1;}
-      .step{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-        color:var(--calm);margin:18px 0 2px;}
-      .substep{color:var(--muted);font-size:.92rem;margin-bottom:6px;}
-      .card{background:rgba(127,127,127,.05);border:1px solid rgba(127,127,127,.14);
-        border-left:4px solid #9ca3af;border-radius:12px;padding:12px 16px;margin:10px 0;
+      .block-container{max-width:760px;}
+      .hero h1{margin:0;font-family:Georgia,'Iowan Old Style','Times New Roman',serif;
+        font-size:2.7rem;font-weight:700;letter-spacing:-.5px;color:var(--ink);}
+      .hero .tag{color:var(--muted);margin-top:7px;font-size:1.08rem;line-height:1.55;max-width:48ch;}
+      .pills{display:flex;flex-wrap:wrap;gap:7px;margin:13px 0 2px;}
+      .pill{font-size:.74rem;font-weight:600;color:var(--teal);background:#fff;
+        border:1px solid var(--line);padding:4px 12px;border-radius:999px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+      .trust{color:var(--muted);font-size:.82rem;margin:11px 0 2px;}
+      .journey{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:20px 0 6px;}
+      .jstep{font-size:.8rem;color:var(--muted);background:#fff;
+        padding:6px 16px;border-radius:999px;border:1px solid var(--line);transition:all .2s;}
+      .jstep.active{color:#fff;border-color:transparent;background:var(--clay);
+        box-shadow:0 4px 12px rgba(194,97,63,.32);}
+      .jstep.done{color:var(--teal);border-color:#cfe5e0;background:#f0f8f6;}
+      .jsep{color:#d8ccba;}
+      .step{font-size:.76rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+        color:var(--clay);margin:24px 0 3px;}
+      .substep{color:var(--muted);font-size:.95rem;margin-bottom:8px;line-height:1.55;}
+      .card{background:#fff;border:1px solid var(--line);border-left:4px solid #d8ccba;
+        border-radius:14px;padding:14px 18px;margin:11px 0;box-shadow:0 1px 3px rgba(44,39,34,.05);
         transition:transform .15s ease,box-shadow .15s ease;}
-      .card:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(0,0,0,.08);}
+      .card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(44,39,34,.10);}
       .card.green{border-left-color:var(--good);} .card.amber{border-left-color:var(--amber);}
       .card.red{border-left-color:var(--bad);}
-      .badge{display:inline-block;padding:2px 11px;border-radius:999px;font-size:.72rem;font-weight:700;}
-      .badge.green{background:#e3f5ec;color:#0f6b43;} .badge.amber{background:#fbf1d9;color:#8a6100;}
-      .badge.red{background:#fbe4e0;color:#9b2c1c;} .badge.grey{background:rgba(127,127,127,.16);color:#555;}
-      .pname{font-weight:700;font-size:1.03rem;}
-      .muted{color:var(--muted);font-size:.86rem;}
-      .conf-track{height:14px;background:rgba(127,127,127,.18);border-radius:8px;overflow:hidden;margin:3px 0 4px;}
+      .badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:.72rem;font-weight:700;}
+      .badge.green{background:#e6f4ec;color:#256b48;} .badge.amber{background:#f7eccf;color:#8a6100;}
+      .badge.red{background:#f9e3df;color:#9b2c1c;} .badge.grey{background:#f0ebe2;color:#7a7166;}
+      .pname{font-weight:700;font-size:1.05rem;color:var(--ink);}
+      .muted{color:var(--muted);font-size:.87rem;}
+      .conf-track{height:14px;background:#efe7da;border-radius:8px;overflow:hidden;margin:4px 0 4px;}
       .conf-fill{height:100%;border-radius:8px;}
-      a.src{font-size:.82rem;text-decoration:none;color:var(--calm2);font-weight:600;}
+      .cf{background:#fff7f0;border:1px solid #f0d9c6;border-radius:13px;padding:11px 16px;margin:9px 0;}
+      a.src{font-size:.82rem;text-decoration:none;color:var(--clay-d);font-weight:600;}
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-BAND_COLOR = {"high": "#1b8a5a", "moderate": "#c98a00", "low": "#c0392b"}
+BAND_COLOR = {"high": "#2e7d56", "moderate": "#b07a18", "low": "#c0392b"}
 STATUS_CLASS = {"may_qualify": "green", "need_more_info": "amber", "likely_not": "red"}
 
 
@@ -208,6 +225,7 @@ if result is not None:
     has_opts = any(h.status == "may_qualify" for h in e.rule_hits)
     st.markdown(f"<div class='substep'>{C.step3_intro(has_opts, result.intake.need_type)}</div>",
                 unsafe_allow_html=True)
+    listen_button(g.final_message, result.intake.language)  # read aloud, in the user's language
 
     if g.final_message_en:  # answer was translated into the user's language
         st.caption(C.lang_caption(result.intake.language))
@@ -246,6 +264,18 @@ if result is not None:
             f"<span class='pname'>{esc(h.program)}</span><br>"
             f"<span class='muted'>{esc(h.reason)}</span><br>"
             f"<a class='src' href='{esc(h.source_url)}' target='_blank'>{C.SOURCE_LINK}</a></div>",
+            unsafe_allow_html=True,
+        )
+
+    # counterfactual ("what would change this") — the wow feature, only possible because symbolic
+    cf = unlock_hints(result.intake, select_candidates(result.intake))
+    if cf:
+        rows = "".join(
+            f"<div style='margin-top:4px'>• <b>{esc(p)}</b> opens up if your household income is "
+            f"<b>{esc(b)}</b> or below.</div>" for p, b in cf[:4]
+        )
+        st.markdown(
+            f"<div class='cf'><b>{C.CF_TITLE}</b><br><span class='muted'>{C.CF_INTRO}</span>{rows}</div>",
             unsafe_allow_html=True,
         )
 

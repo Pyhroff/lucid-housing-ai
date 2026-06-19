@@ -1,3 +1,7 @@
-# Streamlit theme — calm, trustworthy palette (matches the in-app CSS identity).
+# Warm, premium, LIGHT theme — calm and trustworthy for a stressed user.
 [theme]
-primaryColor = "#0b6e6e"        # calm teal for buttons/accents (NOT the default red)
+base = "light"
+primaryColor = "#c2613f"               # warm terracotta (buttons / CTAs)
+backgroundColor = "#faf7f2"            # warm cream canvas
+secondaryBackgroundColor = "#f2ebe1"   # warm panel / sidebar
+textColor = "#2c2722"                  # warm near-black

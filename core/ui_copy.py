@@ -182,6 +182,15 @@ REDTEAM_FOOT = ("Even if an attack slipped past detection, it could not change y
                 "decided by the deterministic rules engine, never by anything you (or an attacker) type.")
 
 
+# Counterfactual ("what would change your answer") — the wow feature, only possible because symbolic
+CF_TITLE = "💡 What would change this answer"
+CF_INTRO = ("Because a rules engine — not an AI — makes the call, Lucid can tell you exactly what "
+            "would unlock more help:")
+
+# Voice / listen (accessibility — low-literacy & visually-impaired users)
+LISTEN_HINT = "Prefer to listen? Lucid can read this answer aloud in your language."
+
+
 def next_best_step(income_band: str, household_size, location) -> str | None:
     """Calibrated nudge: the single fact that would most improve the answer (edge over a plain LLM)."""
     if income_band == "unknown":

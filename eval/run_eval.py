@@ -69,6 +69,7 @@ def run_regression() -> list[dict]:
             "scam_pred": bool(g.scam_flags), "is_scam": sc["is_scam"],
             "inj_pred": g.injection_detected, "is_injection": sc["is_injection"],
             "esc_ok": g.escalate_to_human == sc["should_escalate"],
+            "conf": conf, "escalate": g.escalate_to_human,
             "cited": len(hits) > 0 and all(h.source_url.startswith("http") for h in hits),
         })
     return rows
@@ -147,6 +148,27 @@ def main() -> None:
         if ids:
             print(f"   · {label}: {', '.join(ids)}")
 
+    # combined adversarial robustness + confidence calibration
+    from core.config import confidence_band
+
+    attacks = len(s_pos) + len(i_pos)
+    caught = sum(r["scam_pred"] for r in s_pos) + sum(r["inj_pred"] for r in i_pos)
+    robust = _rate(caught, attacks)
+    print(f"\n  Adversarial robustness ........ {robust:5.0f}%  (caught {caught}/{attacks} planted attacks)")
+
+    print("\nCONFIDENCE CALIBRATION  (does higher confidence mean safer to act without a human?)")
+    calib = {}
+    for b in ("high", "moderate", "low"):
+        grp = [r for r in reg if confidence_band(r["conf"]) == b]
+        if grp:
+            mean = round(sum(r["conf"] for r in grp) / len(grp), 2)
+            esc = _rate(sum(r["escalate"] for r in grp), len(grp))
+            calib[b] = {"n": len(grp), "mean_conf": mean, "escalates_pct": esc}
+            print(f"  {b:9} n={len(grp):2}  mean conf {mean:.2f}  ->  escalates to a human {esc:3.0f}%")
+    print("  (calibrated = low confidence escalates often, high confidence rarely)")
+
+    results["robustness_pct"] = robust
+    results["calibration"] = calib
     results["regression"] = {
         "determination_pct": det, "abstention_match_pct": esc, "citation_pct": cit,
         "scam_recall_pct": s_rec, "scam_fp_pct": s_fp,

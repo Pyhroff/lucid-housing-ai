@@ -25,6 +25,17 @@
 
 *Reading:* the deterministic detectors catch the obvious attacks cleanly and **don't** over-fire on normal users — but they have real limits on subtle, keyword-free attacks. **Honest, not 100%.**
 
+**Adversarial robustness (combined): 71% — caught 5 of 7 planted attacks.** A single honest headline for "how hard is Lucid to fool."
+
+### 2b. Confidence calibration — *does higher confidence mean safer to act?*
+| Confidence band | n | mean conf | escalates to a human |
+|---|---|---|---|
+| high | 18 | 0.97 | 11% |
+| moderate | 3 | 0.73 | 0% |
+| low | 2 | 0.45 | **100%** |
+
+*Reading:* the confidence number is **meaningful, not decorative** — when Lucid is unsure it escalates (low → 100%), when it's sure it rarely does. The 11% in the high band is *deliberate*: underserved cases (veteran / domestic-violence) are routed to a specialist **regardless** of confidence. So Lucid has two honest escalation triggers — uncertainty *and* equity — and the calibration shows both.
+
 ## 3. Live LLM — *where it can fail* (real Groq model, 23/23 ran on the LLM)
 | Metric | Result |
 |---|---|
