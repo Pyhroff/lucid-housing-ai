@@ -1,0 +1,169 @@
+{
+  "_meta": {
+    "region": "US-federal (DEFAULT — matches the Rosa persona; team confirms US vs. India before Milestone 6)",
+    "note": "9 rules, web-confirmed against official .gov/.org sources on 2026-06-16 (see each row's source_note). 'verified: true' here means the program, the source_url, and the general eligibility basis were confirmed against the cited official page. Exact local dollar/AMI figures vary by locality and are intentionally NOT asserted — they are described in eligibility_criteria.notes. Team should spot-check the figures for the specific demo city and may add their chosen local PHA / legal-aid org to push toward ~15 rules.",
+    "categories": {
+      "income_tested_benefit": "engine compares the user's income_band to income_band_max -> may_qualify / likely_not / need_more_info",
+      "referral_resource": "a navigator/referral that connects to local help; broadly available, framed as an option not a determination",
+      "universal_resource": "free service with no income test (counseling, crisis shelter, legal info)"
+    },
+    "schema_per_rule": "see core/schemas.py -> KBRule"
+  },
+  "rules": [
+    {
+      "program": "Housing Choice Voucher Program (Section 8)",
+      "jurisdiction": "US-federal",
+      "need_types": ["rental_assistance"],
+      "eligibility_criteria": {
+        "category": "income_tested_benefit",
+        "income_band_max": "very_low",
+        "household_size_min": 1,
+        "citizenship_or_eligible_immigration": true,
+        "administered_by": "local Public Housing Agency (PHA)",
+        "notes": "HUD: family income generally may not exceed 50% of the area median income (AMI). At least 75% of new vouchers must go to extremely-low-income (<=30% AMI) families. Waitlists are common and sometimes closed. Apply through your local PHA."
+      },
+      "plain_summary": "Helps families with very low income pay rent for a home they choose in the private market. You apply through your local housing agency (PHA).",
+      "source_url": "https://www.hud.gov/helping-americans/housing-choice-vouchers",
+      "last_checked": "2026-06-16",
+      "verified": true,
+      "source_note": "Confirmed program, eligibility (<=50% AMI, citizen/eligible-immigration, PHA-administered) and URL against HUD.gov, 2026-06-16.",
+      "team_todo": "Confirm the AMI dollar threshold for your demo city's metro area."
+    },
+    {
+      "program": "Public Housing",
+      "jurisdiction": "US-federal",
+      "need_types": ["rental_assistance"],
+      "eligibility_criteria": {
+        "category": "income_tested_benefit",
+        "income_band_max": "low",
+        "household_size_min": 1,
+        "citizenship_or_eligible_immigration": true,
+        "administered_by": "local Public Housing Agency (PHA)",
+        "notes": "HUD: decent, safe rental housing for eligible low-income families, the elderly, and persons with disabilities; rent is income-based. Income limits are set locally by the PHA within HUD limits (generally <=80% AMI, with priority to lower bands)."
+      },
+      "plain_summary": "Low-rent apartments owned by the government for people with low income, seniors, and people with disabilities. You apply at your local housing agency.",
+      "source_url": "https://www.hud.gov/helping-americans/public-housing-programs",
+      "last_checked": "2026-06-16",
+      "verified": true,
+      "source_note": "Confirmed program, eligibility category and URL against HUD.gov, 2026-06-16.",
+      "team_todo": "Confirm local income limits with the demo city's PHA."
+    },
+    {
+      "program": "Privately Owned Subsidized Housing (HUD Multifamily / Project-Based Section 8, 202, 811)",
+      "jurisdiction": "US-federal",
+      "need_types": ["rental_assistance"],
+      "eligibility_criteria": {
+        "category": "income_tested_benefit",
+        "income_band_max": "low",
+        "household_size_min": 1,
+        "administered_by": "private property owners under HUD contract",
+        "notes": "HUD pays private apartment owners so rent is reduced for low-income tenants; rent is based on income. Includes Project-Based Rental Assistance, Section 202 (elderly) and Section 811 (disabilities). You apply directly at the property's management office; use HUD's property search to find participating buildings."
+      },
+      "plain_summary": "Privately owned apartments where the government lowers your rent based on your income. You apply directly at the apartment office; HUD's online search finds buildings near you.",
+      "source_url": "https://www.hud.gov/hud-partners/multifamily-property-search",
+      "last_checked": "2026-06-16",
+      "verified": true,
+      "source_note": "Confirmed program descriptions (PBRA/202/811) and property-search URL against HUD.gov, 2026-06-16.",
+      "team_todo": null
+    },
+    {
+      "program": "Emergency Rental & Eviction-Prevention Help (United Way 211)",
+      "jurisdiction": "US-federal",
+      "need_types": ["eviction_help", "rental_assistance", "emergency"],
+      "eligibility_criteria": {
+        "category": "referral_resource",
+        "household_size_min": 1,
+        "administered_by": "United Way 211 / local agencies",
+        "notes": "Dial 211 (or 211.org) to be connected to local emergency rental assistance, eviction-prevention funds, and legal aid. Availability and income rules vary by locality. This is information and referral, not legal advice."
+      },
+      "plain_summary": "If you are facing eviction now, dial 2-1-1 (free, confidential) to be connected to local emergency rent help and eviction-prevention programs in your area.",
+      "source_url": "https://www.211.org/get-help/housing-expenses",
+      "last_checked": "2026-06-16",
+      "verified": true,
+      "source_note": "Confirmed 211 housing-expenses referral page and scope against 211.org, 2026-06-16. (Note: Treasury's pandemic-era ERA program has largely wound down; 211 is the durable entry point to current local programs.)",
+      "team_todo": null
+    },
+    {
+      "program": "Find Help With Rent and Bills (CFPB renter tool)",
+      "jurisdiction": "US-federal",
+      "need_types": ["rental_assistance", "eviction_help", "emergency"],
+      "eligibility_criteria": {
+        "category": "referral_resource",
+        "administered_by": "Consumer Financial Protection Bureau (federal)",
+        "notes": "Official federal hub that helps renters find state/local rental and utility assistance, understand protections, and connect to housing counselors. No income test to use the tool; underlying programs have their own rules."
+      },
+      "plain_summary": "An official government tool that helps you find rent and utility help in your area and explains your options as a renter.",
+      "source_url": "https://www.consumerfinance.gov/housing/housing-insecurity/help-for-renters/get-help-paying-rent-and-bills/",
+      "last_checked": "2026-06-16",
+      "verified": true,
+      "source_note": "Confirmed CFPB renter help page and URL against consumerfinance.gov, 2026-06-16.",
+      "team_todo": null
+    },
+    {
+      "program": "Low Income Home Energy Assistance Program (LIHEAP)",
+      "jurisdiction": "US-federal",
+      "need_types": ["utility_assistance", "emergency"],
+      "eligibility_criteria": {
+        "category": "income_tested_benefit",
+        "income_band_max": "moderate",
+        "household_size_min": 1,
+        "administered_by": "state/territory LIHEAP offices (HHS-funded)",
+        "notes": "Helps pay heating/cooling bills and provides emergency help during an energy crisis. Income limits vary by state (commonly up to 150% of the federal poverty level or 60% of state median income). Apply via EnergyHelp.us or the NEAR hotline 1-866-674-6327. LIHEAP never charges a fee."
+      },
+      "plain_summary": "Helps pay your heating or cooling bills, and can give emergency help if your power is about to be shut off. Apply through your state's energy assistance office.",
+      "source_url": "https://www.acf.hhs.gov/ocs/low-income-home-energy-assistance-program-liheap",
+      "last_checked": "2026-06-16",
+      "verified": true,
+      "source_note": "Confirmed program, eligibility basis, NEAR hotline and URL against acf.hhs.gov, 2026-06-16.",
+      "team_todo": "Confirm the income threshold used by the demo state."
+    },
+    {
+      "program": "Free Legal Aid for Eviction & Tenant Rights (LawHelp.org / Legal Services Corporation)",
+      "jurisdiction": "US-federal",
+      "need_types": ["eviction_help", "tenant_rights"],
+      "eligibility_criteria": {
+        "category": "referral_resource",
+        "administered_by": "LSC-funded nonprofit legal aid programs (130 nationwide)",
+        "notes": "LawHelp.org gives free self-help info and finds local legal aid in every state; anyone can use the information. Free legal REPRESENTATION from LSC-funded programs is income-tested at <=125% of the federal poverty guidelines (2025: $19,563 for an individual, $40,188 for a family of four). This is information, not legal advice."
+      },
+      "plain_summary": "Free help understanding your rights and, if you qualify by income, a free lawyer for your eviction. Find local legal aid through LawHelp.org.",
+      "source_url": "https://www.lawhelp.org/resource/rent-and-eviction-help-resources",
+      "last_checked": "2026-06-16",
+      "verified": true,
+      "source_note": "Confirmed LawHelp/LSC scope and the 125% FPL representation threshold ($19,563 / $40,188, 2025) against lawhelp.org and lsc.gov, 2026-06-16.",
+      "team_todo": "Optionally add the specific LSC-funded legal-aid org for your demo city as its own rule."
+    },
+    {
+      "program": "HUD-Approved Housing Counseling (free / low-cost)",
+      "jurisdiction": "US-federal",
+      "need_types": ["counseling", "eviction_help", "rental_assistance"],
+      "eligibility_criteria": {
+        "category": "universal_resource",
+        "administered_by": "HUD-participating housing counseling agencies",
+        "notes": "Free or low-cost counseling to help renters understand options, build a plan, and avoid eviction. No income test. Find a counselor at HUD's site or call 800-569-4287 (TTY 202-708-1455)."
+      },
+      "plain_summary": "Talk to a trained housing counselor for free to understand your options and make a plan. Call 800-569-4287 to find one near you.",
+      "source_url": "https://www.hud.gov/counseling",
+      "last_checked": "2026-06-16",
+      "verified": true,
+      "source_note": "Confirmed HUD housing-counseling service, phone number and URL against HUD.gov, 2026-06-16.",
+      "team_todo": null
+    },
+    {
+      "program": "HUD Find Shelter (emergency housing & crisis resources)",
+      "jurisdiction": "US-federal",
+      "need_types": ["emergency", "homelessness", "eviction_help"],
+      "eligibility_criteria": {
+        "category": "universal_resource",
+        "administered_by": "HUD (national directory of local providers)",
+        "notes": "Searchable directory of nearby shelter, housing, health care, and clothing resources for people at risk of or experiencing homelessness. No income test to search. A safety-net fallback when eviction is imminent."
+      },
+      "plain_summary": "If you might lose your home very soon, this official tool finds emergency shelter and help near you.",
+      "source_url": "https://www.hud.gov/findshelter",
+      "last_checked": "2026-06-16",
+      "verified": true,
+      "source_note": "Confirmed HUD Find Shelter tool and URL against HUD.gov, 2026-06-16.",
+      "team_todo": null
+    }
+  ]
+}

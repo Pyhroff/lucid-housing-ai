@@ -1,0 +1,15 @@
+# Lucid — Python 3.11+ (developed on 3.12)
+# Keep this lean; a narrow system that runs beats a broad one that half-works.
+
+pydantic>=2.6          # schema validation between every stage
+python-dotenv>=1.0     # load API keys from .env (never commit keys)
+
+# --- UI (Milestone 2+) ---
+streamlit>=1.30        # the demo UI; deploys free to Streamlit Community Cloud
+
+# --- LLM providers (install only the one you use; both are free-tier) ---
+google-genai>=1.0          # LLM_PROVIDER=gemini  (default; current SDK — NOT the deprecated google-generativeai)
+groq>=0.11                 # LLM_PROVIDER=groq    (fast Llama fallback)
+
+# --- eval (Milestone 7) ---
+textstat>=0.7          # Flesch-Kincaid reading-level metric (turns the "6th-grade" claim into a measured number)

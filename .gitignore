@@ -1,0 +1,16 @@
+# secrets — NEVER commit
+.env
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# eval output is regenerated
+eval/results.json
+
+# os
+.DS_Store
+Thumbs.db
