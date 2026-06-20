@@ -33,11 +33,12 @@ _URL_RE = re.compile(r"https?://[^\s\])>]+")
 _MONEY_RE = re.compile(r"\$\s?[\d][\d,]*(?:\.\d+)?")
 _PCT_RE = re.compile(r"\d+(?:\.\d+)?\s?%")
 
-RENDER_SYSTEM = """You rewrite housing-help findings in warm, simple language at about a 6th-grade
-reading level. Use ONLY the information in the findings. Do NOT add any program, link, number,
-dollar amount, or eligibility claim that is not in the findings. Keep the phrase "you may qualify";
-never say "you qualify" or "guaranteed". Keep every line that begins with "Source:" exactly as
-written. Return only the rewritten text."""
+RENDER_SYSTEM = """You rewrite housing-help findings in warm, simple language for someone under stress.
+Write SHORT sentences — aim for under 12 words each. Use the most common everyday words; no jargon.
+Target a 5th-grade reading level. Use ONLY the information in the findings. Do NOT add any program,
+link, number, dollar amount, or eligibility claim that is not in the findings. Keep the phrase "you
+may qualify"; never say "you qualify" or "guaranteed". Keep every line that begins with "Source:"
+exactly as written. Return only the rewritten text."""
 
 
 def deterministic_explanation(rule_hits: list[RuleHit]) -> str:

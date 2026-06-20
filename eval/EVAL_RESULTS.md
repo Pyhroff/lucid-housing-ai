@@ -41,13 +41,13 @@
 |---|---|
 | Extraction accuracy (all 3 fields) | **91%** |
 | — language | 100% |
-| — need_type | 96% |
-| — income_band | **91%** (historically the bottleneck) |
+| — need_type | 100% |
+| — income_band | **91%** (the usual bottleneck) |
 | End-to-end determination (live facts) | **100%** (vs 100% with perfect facts) |
-| Faithfulness: live render stayed grounded | **100%** (0 hallucinations; guard caught 0 because the LLM never drifted) |
-| Reading level (Flesch-Kincaid grade) | **9.0** |
+| Faithfulness: live render stayed grounded | **96%** — the guard **caught 1 real drift and replaced it** with grounded text |
+| Reading level (Flesch-Kincaid grade) | **8.7** |
 
-*Reading:* intake is the bottleneck (income mapping is hardest), but the symbolic engine is robust enough that the observed extraction errors did **not** flip any determination. The live render never fabricated a link, number, or claim. **Reading grade 9.0 is above our ~6th-grade target — a known area to improve** (program names like "Housing Choice Voucher Program" inflate it).
+*Reading:* intake is the bottleneck (income mapping is hardest), but the symbolic engine is robust enough that the observed extraction errors did **not** flip any determination. Crucially, the faithfulness guard **fired for real** — it caught one LLM render that drifted and swapped it for the strictly-grounded version, so **0 hallucinations reached the user.** That's the guard working, not just passing. **Reading grade 8.7 is still above our ~6th-grade target** (official program names like "Housing Choice Voucher Program" set the floor) — an honest area to keep improving.
 
 ## 4. Equity audit — *where we underperform* (extraction accuracy by persona)
 | Persona group | Extraction accuracy |
