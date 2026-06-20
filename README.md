@@ -43,6 +43,30 @@ flowchart LR
 - 🧮 **Faithfulness guard** — rejects any answer with a fabricated link, ungrounded number, or "guaranteed" claim.
 - 🌐 **Multilingual + 🔊 voice** — answers in the user's language and reads them aloud (accessibility).
 - 📊 **Self-evaluation** — a two-layer harness reports its own accuracy *and where it underperforms* (`eval/EVAL_RESULTS.md`).
+- 🌐 **Multilingual + 🔊 voice** — answers in the user's language and reads them aloud (accessibility).
+- ⚖️ **Calibrated abstention** — knows when it doesn't know; low confidence escalates to a human (100% in eval).
+- 🙋 **Human-in-the-loop** — confirms the extracted facts with you *before* deciding, and never makes the final call.
+
+## Under the hood
+
+**Pipeline:** `Story (any language) → Intake (LLM → facts) → user confirms → Rules Engine (deterministic) → Retrieval (cites source) → Faithfulness Guard → Confidence + Counterfactuals → Guardian (scam · injection · bias · escalate) → Translate → cited answer.`
+
+| Module | Role |
+|---|---|
+| `agents/intake.py` | LLM turns the story into structured facts (+ offline keyword fallback) |
+| `core/rules_engine.py` | **Deterministic** eligibility decision — no LLM, can't hallucinate |
+| `core/retrieval.py` | Matches the official programs + their source URLs |
+| `agents/eligibility.py` | Plain-language render + **faithfulness guard** + derived confidence |
+| `core/confidence.py` | Confidence from concrete signals (completeness, match clarity, retrieval) |
+| `core/counterfactual.py` | "What would change your answer" — re-runs the engine across income bands |
+| `agents/guardian.py` | Scam detection · prompt-injection defense · bias check · escalation |
+| `core/translate.py` | Translates the final answer (reason in English, translate last) |
+| `eval/run_eval.py` | Two-layer evaluation harness (deterministic regression + live, per persona) |
+| `app.py` | Streamlit UI — warm theme, journey, Eligibility Explorer, red-team, voice |
+
+**Responsible-AI register (all 7 actually run):** hallucinated eligibility → deterministic engine · misinformation → grounding + faithfulness guard + citations · over-reliance → "may qualify" framing + derived confidence + escalation · bias/exclusion → multilingual + bias check + equity audit · privacy → no login, no PII, nothing stored · scams → Guardian scam detection · prompt-injection → the whole user input is treated as untrusted.
+
+**Stack (all free):** Python 3.12 · Streamlit · Groq Llama-3.3-70B / Google Gemini (swappable via `.env`) · Pydantic · textstat · built with **Claude Code** (AI coding assistant, disclosed).
 
 ## Evaluation headline
 
