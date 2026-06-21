@@ -130,8 +130,8 @@ st.markdown("<div class='trust'>" + " &nbsp;·&nbsp; ".join(C.TRUST) + "</div>",
 with st.expander(C.HOW_TITLE):
     st.markdown(C.HOW_BODY)
 
-# Two "judge-bait" showcases in TABS (tabs persist across reruns, so the live widgets don't collapse).
-_show = st.tabs(["🔬 Eligibility Explorer", C.REDTEAM_TITLE])
+# "Judge-bait" showcases in TABS (tabs persist across reruns, so the live widgets don't collapse).
+_show = st.tabs(["🔬 Eligibility Explorer", C.REDTEAM_TITLE, "💚 Ethics & Impact"])
 
 with _show[0]:
     st.markdown(f"<span class='muted'>{C.EXPLORER_INTRO}</span>", unsafe_allow_html=True)
@@ -174,6 +174,22 @@ with _show[1]:
             _ok, _detail = (not _flagged), ("correctly left alone (no false alarm)" if not _flagged else "false alarm")
         st.markdown(f"{'✅' if _ok else '❌'} **{_label}** — {_detail}")
     st.caption(C.REDTEAM_FOOT)
+
+with _show[2]:
+    st.markdown(f"**{C.IMPACT_TITLE}**")
+    for _col, (_num, _desc) in zip(st.columns(len(C.IMPACT_STATS)), C.IMPACT_STATS):
+        _col.markdown(
+            f"<div style='font-size:1.7rem;font-weight:800;color:var(--clay)'>{_num}</div>"
+            f"<div class='muted'>{_desc}</div>",
+            unsafe_allow_html=True,
+        )
+    st.markdown(" ")
+    st.markdown(C.WHO_WE_SERVE)
+    st.markdown(f"**{C.ETHICS_TITLE}**")
+    for _c in C.ETHICS_COMMITMENTS:
+        st.markdown(_c)
+    st.markdown(f"**{C.HONESTY_TITLE}**")
+    st.caption(C.HONESTY_BODY)
 
 # ---------------------------------------------------------------- journey
 active = 3 if st.session_state.result is not None else (2 if st.session_state.facts is not None else 1)

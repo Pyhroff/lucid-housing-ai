@@ -83,6 +83,10 @@ flowchart LR
 
 *Synthetic, self-authored scenarios; the regression line tests our rule encoding, the live line is where it can fail.*
 
+## Responsible AI & Social Impact
+
+Lucid is built **for the people these systems fail most**, and is **honest about its limits**. The full **[Model Card / Responsible-AI statement →](ETHICS.md)** documents intended use, out-of-scope use, the risk register *(with which mitigations are measured)*, failure modes, the equity audit, data provenance, and human oversight. The app surfaces this live in the **💚 Ethics & Impact** tab — the gap we're closing ($140B unclaimed, 7.6M evictions, $65M scams), who we serve first, our commitments, and *where we honestly underperform.*
+
 ## Quickstart
 
 ```bash

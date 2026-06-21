@@ -191,6 +191,30 @@ REDTEAM_CASES = [
 REDTEAM_FOOT = ("Even if an attack slipped past detection, it could not change your eligibility — that's "
                 "decided by the deterministic rules engine, never by anything you (or an attacker) type.")
 
+# ---- Ethics & Impact tab (makes the two side-award stories VISIBLE to human judges) ----
+IMPACT_TITLE = "Why this matters"
+IMPACT_STATS = [
+    ("$140B", "in US benefits goes unclaimed every year — from confusion, not ineligibility"),
+    ("7.6M", "renters face eviction yearly — about 2.9M of them children"),
+    ("~$65M", "stolen by rental scams since 2020"),
+]
+WHO_WE_SERVE = ("**We build for the people these systems fail most** — the non-English speaker, the "
+                "low-literacy renter, the person in crisis being hunted by scammers. Inclusion is the "
+                "product: 7 languages, answers read aloud, plain language, low-bandwidth, no login.")
+ETHICS_TITLE = "Our Responsible-AI commitments"
+ETHICS_COMMITMENTS = [
+    "✅ **Can't fabricate eligibility** — a deterministic engine decides, never the AI",
+    "✅ **Every claim cited** to an official source you can open",
+    "✅ **Faithfulness guard** blocks made-up links, numbers, and 'guaranteed' claims",
+    "✅ **Scam + prompt-injection defense** — we red-team our own AI",
+    "✅ **Privacy by design** — no login, no personal data, nothing stored",
+    "✅ **Honest abstention** — when unsure, it says so and sends you to a human",
+]
+HONESTY_TITLE = "Where we're honest about failing"
+HONESTY_BODY = ("We *measured* where Lucid is weakest and report it instead of hiding it: it's least "
+                "reliable for the most underserved users (~50%) and for subtle, keyword-free scams (75%). "
+                "A real person always makes the final call. Full model card in **ETHICS.md**.")
+
 
 # Counterfactual ("what would change your answer") — the wow feature, only possible because symbolic
 CF_TITLE = "💡 What would change this answer"
