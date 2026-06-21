@@ -37,6 +37,16 @@ _INJECTION_PATTERNS = [
     "from now on you", "reveal your instructions", "print your instructions",
     "show me your prompt", "jailbreak", "respond only with", "output the following",
     "</system>", "<system>", "[system]",
+    # hardened (post-demo): "forget"-style + "previous/prior/before prompts" variants (high-precision)
+    "forget all your", "forget all previous", "forget the previous", "forget everything you",
+    "forget your previous", "before prompts", "previous prompt", "prior prompt",
+    "previous instruction", "prior instruction", "earlier instruction",
+]
+
+# Requests for clearly ILLEGAL action (not legit "is my eviction illegal?" questions — those are fine).
+_HARMFUL_PATTERNS = [
+    "illegal way", "illegal ways", "illegal method", "illegally evict", "forge", "fake document",
+    "fake id", "fake pay stub", "without paying rent", "squat in", "break into", "how to scam",
 ]
 _FEE_PATTERNS = [
     "pay $", "a fee", "fee to", "pay to hold", "deposit to hold", "processing fee",
@@ -86,6 +96,15 @@ def detect_injection(*texts: str | None) -> tuple[bool, list[str]]:
     return (len(hits) > 0, sorted(set(hits)))
 
 
+def detect_harmful(*texts: str | None) -> bool:
+    """True if any text requests clearly illegal/harmful ACTION (asking HOW to do something illegal).
+
+    Deliberately narrow: 'illegal eviction' / 'is my eviction illegal?' are legitimate tenant concerns
+    and do NOT match — only requests FOR illegal methods ('illegal ways to…', 'forge…') do.
+    """
+    return any(_scan(t, _HARMFUL_PATTERNS) for t in texts)
+
+
 def detect_scam(item: str | None) -> list[str]:
     """Inspect a pasted link/message for fraud signals. Returns scam-flag tags."""
     if not item:
@@ -132,6 +151,7 @@ def _compose_message(
     engine: EngineResult,
     scam_flags: list[str],
     injection_detected: bool,
+    harmful: bool,
     bias_reasons: list[str],
     escalate: bool,
 ) -> str:
@@ -146,8 +166,13 @@ def _compose_message(
         )
     if injection_detected:
         lines.append(
-            "\n[SECURITY NOTE] The text you pasted tried to change our instructions. We ignored it; "
-            "your result comes only from official rules, not from anything in that text."
+            "\n[SECURITY NOTE] The text tried to change our instructions. We ignored it; your result "
+            "comes only from official rules, not from anything you (or an attacker) typed."
+        )
+    if harmful:
+        lines.append(
+            "\n[NOTE] Lucid can't help with anything illegal. We've set that aside — the options above "
+            "are legitimate, official, and free."
         )
     if bias_reasons:
         notes = []
@@ -176,6 +201,7 @@ def run_guardian(
     item = pasted_item or facts.item_to_verify
     scam_flags = detect_scam(item)
     injection_detected, _ = detect_injection(raw_text, item)
+    harmful = detect_harmful(raw_text, item)
     bias_flag, bias_reasons, bias_force = detect_bias(facts)
 
     no_options = not any(h.status == "may_qualify" for h in engine.rule_hits)
@@ -184,8 +210,11 @@ def run_guardian(
     return GuardianResult(
         scam_flags=scam_flags,
         injection_detected=injection_detected,
+        harmful_request=harmful,
         bias_flag=bias_flag,
         bias_reasons=bias_reasons,
         escalate_to_human=escalate,
-        final_message=_compose_message(engine, scam_flags, injection_detected, bias_reasons, escalate),
+        final_message=_compose_message(
+            engine, scam_flags, injection_detected, harmful, bias_reasons, escalate
+        ),
     )

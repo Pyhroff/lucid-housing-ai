@@ -89,6 +89,7 @@ class GuardianResult(BaseModel):
 
     scam_flags: list[str] = Field(default_factory=list)
     injection_detected: bool = False
+    harmful_request: bool = Field(default=False, description="user asked for illegal/harmful action")
     bias_flag: bool = False
     bias_reasons: list[str] = Field(default_factory=list, description="why bias was flagged (for the trace/eval)")
     escalate_to_human: bool = False

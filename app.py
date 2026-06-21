@@ -13,7 +13,7 @@ import json
 import streamlit as st
 import streamlit.components.v1 as components
 
-from agents.guardian import LIMITATIONS, detect_injection, detect_scam
+from agents.guardian import LIMITATIONS, detect_harmful, detect_injection, detect_scam
 from agents.intake import run_intake
 from core import ui_copy as C
 from core.config import confidence_band
@@ -233,6 +233,10 @@ if facts is not None:
     if crisis:
         st.warning(crisis)
 
+    # Immediate safety feedback at Step 2 (injection / illegal-request in the story itself)
+    if detect_injection(st.session_state.story_input)[0] or detect_harmful(st.session_state.story_input):
+        st.warning(C.GUARD_NOTICE)
+
     chips = [f"language: {facts.language}", f"urgency: {facts.urgency}"] + list(facts.situation_flags)
     st.markdown(" ".join(f"<span class='badge grey'>{esc(c)}</span>" for c in chips), unsafe_allow_html=True)
     if facts.assumptions:
@@ -285,6 +289,8 @@ if result is not None:
         st.error(C.scam_warning(g.scam_flags))
     if g.injection_detected:
         st.info(C.INJECTION_NOTE)
+    if g.harmful_request:
+        st.warning(C.HARMFUL_NOTE)
     if g.bias_flag:
         st.info(C.EQUITY_NOTE)
     if g.escalate_to_human:

@@ -130,8 +130,12 @@ def scam_warning(flags: list[str]) -> str:
             + ". Real help is **free**. Never pay a fee or share your SSN or bank details.")
 
 
-INJECTION_NOTE = ("🛡️ Some pasted text tried to change our instructions. We ignored it — your answer "
-                  "comes only from official rules.")
+INJECTION_NOTE = ("🛡️ Some text tried to change our instructions. We ignored it — your answer comes only "
+                  "from official rules, not from anything you (or an attacker) typed.")
+HARMFUL_NOTE = ("🚫 Lucid can't help with anything illegal — we set that aside and show only legitimate, "
+                "official options.")
+GUARD_NOTICE = ("🛡️ Heads up: that text tried to change our instructions, or asked for something we can't "
+                "help with. We've ignored it — Lucid only ever shows legitimate, official options.")
 EQUITY_NOTE = ("🌐 A note in fairness: we're most reliable for English-language US programs and may miss "
                "specialized help. A person can make sure you're not overlooked.")
 ESCALATE_NOTE = "We're not fully sure here — please let a caseworker confirm before you act on it."
