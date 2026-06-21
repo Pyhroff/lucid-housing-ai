@@ -102,7 +102,7 @@ def esc(s: str) -> str:
 
 
 # ---------------------------------------------------------------- state
-for k, v in {"facts": None, "mode": None, "story_input": "", "pasted_input": "", "result": None}.items():
+for k, v in {"facts": None, "mode": None, "story_input": "", "pasted_input": "", "result": None, "auto_run": False}.items():
     st.session_state.setdefault(k, v)
 
 
@@ -111,6 +111,7 @@ def _load_example(story: str, pasted: str) -> None:
     st.session_state["pasted_input"] = pasted
     st.session_state["facts"] = None
     st.session_state["result"] = None
+    st.session_state["auto_run"] = True
 
 
 # ---------------------------------------------------------------- sidebar
@@ -212,6 +213,18 @@ st.markdown(
     + "</div>",
     unsafe_allow_html=True,
 )
+
+# ---------------------------------------------------------------- auto-run (demo buttons)
+if st.session_state.get("auto_run") and st.session_state.story_input:
+    st.session_state["auto_run"] = False
+    with st.spinner("Running demo scenario…"):
+        _af, _am = run_intake(st.session_state.story_input, st.session_state.pasted_input or None)
+        st.session_state.facts = _af
+        st.session_state.mode = _am
+        _ar, _ = run_pipeline(
+            st.session_state.story_input, st.session_state.pasted_input or None, facts_override=_af)
+        st.session_state.result = _ar
+    st.rerun()
 
 # ---------------------------------------------------------------- step 1
 st.markdown(f"<div class='step'>{C.STEP1_TITLE}</div>", unsafe_allow_html=True)
