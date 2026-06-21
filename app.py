@@ -7,6 +7,15 @@ just renders run_intake()/run_pipeline().
 """
 from __future__ import annotations
 
+import os
+try:
+    import streamlit as _st
+    for _k in ("GROQ_API_KEY", "GEMINI_API_KEY", "LLM_PROVIDER", "GROQ_MODEL"):
+        if _k in _st.secrets and not os.environ.get(_k):
+            os.environ[_k] = _st.secrets[_k]
+except Exception:
+    pass
+
 import html
 import json
 
