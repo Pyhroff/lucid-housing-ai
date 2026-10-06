@@ -1,4 +1,4 @@
-# 🧭 Lucid
+#  Lucid
 
 **A multilingual, neuro-symbolic assistant that helps people under stress safely navigate housing support — reasoning over cited official rules, catching scams, resisting manipulation, abstaining when unsure, and reporting its own measured accuracy.**
 
@@ -35,17 +35,17 @@ flowchart LR
 
 ## Standout features
 
-- 🧠 **Neuro-symbolic core** — LLM for language, deterministic engine for the determination (*can't hallucinate eligibility*).
-- 📎 **Cited to real sources** — 9 official US programs (HUD, CFPB, 211, LIHEAP, LSC…), each web-verified.
-- 🔬 **Live Eligibility Explorer** — drag income/household and watch the rules engine recompute eligibility *in real time*; programs flip green as you cross official thresholds. Something no LLM can do consistently.
-- 🌟 **Counterfactual explanations** — "Section 8 opens up if your income is *very low* or below." Exact, because the engine is deterministic.
-- 🛡️ **Scam + prompt-injection defense** — treats the *whole* user input as untrusted; a live red-team panel proves it. *Even a successful injection can't change eligibility.*
-- 🧮 **Faithfulness guard** — rejects any answer with a fabricated link, ungrounded number, or "guaranteed" claim.
-- 🌐 **Multilingual + 🔊 voice** — answers in the user's language and reads them aloud (accessibility).
-- 📊 **Self-evaluation** — a two-layer harness reports its own accuracy *and where it underperforms* (`eval/EVAL_RESULTS.md`).
-- 🌐 **Multilingual + 🔊 voice** — answers in the user's language and reads them aloud (accessibility).
-- ⚖️ **Calibrated abstention** — knows when it doesn't know; low confidence escalates to a human (100% in eval).
-- 🙋 **Human-in-the-loop** — confirms the extracted facts with you *before* deciding, and never makes the final call.
+-  **Neuro-symbolic core** — LLM for language, deterministic engine for the determination (*can't hallucinate eligibility*).
+-  **Cited to real sources** — 9 official US programs (HUD, CFPB, 211, LIHEAP, LSC…), each web-verified.
+-  **Live Eligibility Explorer** — drag income/household and watch the rules engine recompute eligibility *in real time*; programs flip green as you cross official thresholds. Something no LLM can do consistently.
+-  **Counterfactual explanations** — "Section 8 opens up if your income is *very low* or below." Exact, because the engine is deterministic.
+-  **Scam + prompt-injection defense** — treats the *whole* user input as untrusted; a live red-team panel proves it. *Even a successful injection can't change eligibility.*
+-  **Faithfulness guard** — rejects any answer with a fabricated link, ungrounded number, or "guaranteed" claim.
+-  **Multilingual +  voice** — answers in the user's language and reads them aloud (accessibility).
+-  **Self-evaluation** — a two-layer harness reports its own accuracy *and where it underperforms* (`eval/EVAL_RESULTS.md`).
+-  **Multilingual +  voice** — answers in the user's language and reads them aloud (accessibility).
+-  **Calibrated abstention** — knows when it doesn't know; low confidence escalates to a human (100% in eval).
+-  **Human-in-the-loop** — confirms the extracted facts with you *before* deciding, and never makes the final call.
 
 ## Under the hood
 
@@ -85,7 +85,7 @@ flowchart LR
 
 ## Responsible AI & Social Impact
 
-Lucid is built **for the people these systems fail most**, and is **honest about its limits**. The full **[Model Card / Responsible-AI statement →](ETHICS.md)** documents intended use, out-of-scope use, the risk register *(with which mitigations are measured)*, failure modes, the equity audit, data provenance, and human oversight. The app surfaces this live in the **💚 Ethics & Impact** tab — the gap we're closing ($140B unclaimed, 7.6M evictions, $65M scams), who we serve first, our commitments, and *where we honestly underperform.*
+Lucid is built **for the people these systems fail most**, and is **honest about its limits**. The full **[Model Card / Responsible-AI statement →](ETHICS.md)** documents intended use, out-of-scope use, the risk register *(with which mitigations are measured)*, failure modes, the equity audit, data provenance, and human oversight. The app surfaces this live in the ** Ethics & Impact** tab — the gap we're closing ($140B unclaimed, 7.6M evictions, $65M scams), who we serve first, our commitments, and *where we honestly underperform.*
 
 ## Quickstart
 
@@ -97,7 +97,7 @@ copy .env.example .env                              # add ONE provider's key (Gr
 streamlit run app.py
 ```
 
-Runs **offline** (keyword fallback) in English with no key; the LLM intake, multilingual answers, and voice light up when a key is set. Try the sidebar examples — including 🌎 Spanish and 🚨 a scam link.
+Runs **offline** (keyword fallback) in English with no key; the LLM intake, multilingual answers, and voice light up when a key is set. Try the sidebar examples — including  Spanish and  a scam link.
 
 ```bash
 python dev_smoke_m1.py ... dev_smoke_m6.py   # offline regression tests (deterministic, free)
