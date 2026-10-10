@@ -31,3 +31,4 @@ jobs:
           python dev_smoke_m4.py
           python dev_smoke_m5.py
           python dev_smoke_m6.py
+          python dev_smoke_m7.py
