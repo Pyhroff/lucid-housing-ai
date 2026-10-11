@@ -1,23 +1,10 @@
-"""
-core/rules_engine.py — the deterministic eligibility determination. NO LLM, EVER.
-
-WHY this file exists (the core trust argument — 30%-criterion material):
-  Whether a user *may qualify* is decided here, by auditable Python over the curated rules,
-  never by a language model. An LLM cannot hallucinate eligibility into existence because
-  eligibility is decided by this function. The LLM's only job (upstream, in intake) is to
-  parse the user's story into the structured facts this engine consumes.
-
-  IMPORTANT (eval-report Fix #1): this engine is deterministic *given the facts*, but those
-  facts come from a probabilistic LLM. So when a required fact is unknown we return
-  `need_more_info` rather than guessing — and the UI confirms assumed facts with the user
-  before this ever runs.
-"""
+"""core/rules_engine.py — deterministic eligibility determination; no LLM calls."""
 from __future__ import annotations
 
 from core.retrieval import category_of
 from core.schemas import IntakeFacts, KBRule, RuleHit
 
-# income bands ordered from lowest to highest income
+# Income bands ordered from lowest to highest income.
 _INCOME_RANK = {"very_low": 0, "low": 1, "moderate": 2, "above_moderate": 3}
 
 
@@ -45,11 +32,14 @@ def _determine_one(facts: IntakeFacts, rule: KBRule) -> RuleHit:
             category=cat,
         )
 
-    # Income-tested benefit.
     income_ok = _income_ok(facts.income_band, crit.get("income_band_max"))
     size_min = crit.get("household_size_min")
+    # A configured household-size condition is not satisfied merely because the
+    # intake did not capture household size. Missing is unknown, not a pass.
     size_ok = (
-        True if (size_min is None or facts.household_size is None) else facts.household_size >= size_min
+        True if size_min is None
+        else None if facts.household_size is None
+        else facts.household_size >= size_min
     )
 
     if income_ok is None:
@@ -57,6 +47,14 @@ def _determine_one(facts: IntakeFacts, rule: KBRule) -> RuleHit:
             program=rule.program,
             status="need_more_info",
             reason=f"To check this we need your household income. {summary}",
+            source_url=rule.source_url,
+            category=cat,
+        )
+    if size_ok is None:
+        return RuleHit(
+            program=rule.program,
+            status="need_more_info",
+            reason=f"To check this we need your household size. {summary}",
             source_url=rule.source_url,
             category=cat,
         )
@@ -68,21 +66,25 @@ def _determine_one(facts: IntakeFacts, rule: KBRule) -> RuleHit:
             source_url=rule.source_url,
             category=cat,
         )
+
+    failed_conditions: list[str] = []
+    if not income_ok:
+        failed_conditions.append("your income may be above this program's limit")
+    if not size_ok:
+        failed_conditions.append("your household size may not meet this program's requirement")
+    reason = " and ".join(failed_conditions).capitalize()
     return RuleHit(
         program=rule.program,
         status="likely_not",
-        reason=f"Your income may be above this program's limit, but rules vary — a caseworker can confirm. {summary}",
+        reason=f"{reason}, but rules vary — a caseworker can confirm. {summary}",
         source_url=rule.source_url,
         category=cat,
     )
 
 
 def determine(facts: IntakeFacts, candidates: list[KBRule]) -> list[RuleHit]:
-    """Run the deterministic determination over each candidate program.
-
-    Ordered may_qualify -> need_more_info -> likely_not, so actionable options surface first.
-    """
-    hits = [_determine_one(facts, r) for r in candidates]
+    """Run deterministic determination; surface actionable and uncertain results first."""
+    hits = [_determine_one(facts, rule) for rule in candidates]
     order = {"may_qualify": 0, "need_more_info": 1, "likely_not": 2}
-    hits.sort(key=lambda h: order.get(h.status, 3))
+    hits.sort(key=lambda hit: order.get(hit.status, 3))
     return hits
