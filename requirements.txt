@@ -1,7 +1,7 @@
 # Lucid — Python 3.11+ (developed on 3.12)
 # Keep this lean; a narrow system that runs beats a broad one that half-works.
 
-pydantic>=2.6          # schema validation between every stage
+pydantic>=2.13.5          # schema validation between every stage
 python-dotenv>=1.0     # load API keys from .env (never commit keys)
 
 # --- UI (Milestone 2+) ---
