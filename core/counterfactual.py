@@ -30,6 +30,11 @@ def unlock_hints(facts: IntakeFacts, candidates: list[KBRule]) -> list[tuple[str
         if crit.get("category") != "income_tested_benefit" or rule.program in current_may:
             continue
         cap = crit.get("income_band_max")
-        if cap in _BAND_LABEL:
+        if cap not in _BAND_LABEL:
+            continue
+        # Only a real counterfactual: income at the cap must actually flip this program to may_qualify.
+        # If something else blocks it (e.g. household size missing or too small), income is not the answer.
+        at_cap = facts.model_copy(update={"income_band": cap})
+        if determine(at_cap, [rule])[0].status == "may_qualify":
             hints.append((rule.program, _BAND_LABEL[cap]))
     return hints

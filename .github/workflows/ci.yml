@@ -21,6 +21,8 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Unit tests (deterministic core)
+        run: pip install pytest && python -m pytest -q tests
       - name: Syntax-check Python sources
         run: python -m compileall -q .
       - name: Run deterministic smoke checks
