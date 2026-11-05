@@ -1,8 +1,8 @@
-#  Lucid
+# Lucid
 
 **A multilingual, neuro-symbolic assistant that helps people under stress safely navigate housing support — reasoning over cited official rules, catching scams, resisting manipulation, abstaining when unsure, and reporting its own measured accuracy.**
 
-![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![Streamlit](https://img.shields.io/badge/UI-Streamlit-ff4b4b) ![License](https://img.shields.io/badge/license-MIT-green) ![Tests](https://img.shields.io/badge/smoke%20suites-6%2F6%20passing-brightgreen)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![Streamlit](https://img.shields.io/badge/UI-Streamlit-ff4b4b) ![License](https://img.shields.io/badge/license-MIT-green) [![CI](https://github.com/Pyhroff/lucid-housing-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Pyhroff/lucid-housing-ai/actions/workflows/ci.yml)
 
 > Built for the USAII Global AI Hackathon 2026 (Undergraduate · "Fix Systems People Depend On") by **Team Three Athaan** — cybersecurity students. Made with AI assistance (Claude Code), disclosed.
 
@@ -100,7 +100,8 @@ streamlit run app.py
 Runs **offline** (keyword fallback) in English with no key; the LLM intake, multilingual answers, and voice light up when a key is set. Try the sidebar examples — including  Spanish and  a scam link.
 
 ```bash
-python dev_smoke_m1.py ... dev_smoke_m6.py   # offline regression tests (deterministic, free)
+pytest -q tests                              # unit tests for the rules engine, confidence and counterfactuals
+python dev_smoke_m1.py ... dev_smoke_m7.py   # offline smoke tests (deterministic, free)
 python eval/run_eval.py --live               # the evaluation harness
 ```
 
