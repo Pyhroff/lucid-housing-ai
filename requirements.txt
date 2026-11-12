@@ -2,7 +2,7 @@
 # Keep this lean; a narrow system that runs beats a broad one that half-works.
 
 pydantic>=2.13.5          # schema validation between every stage
-python-dotenv>=1.0     # load API keys from .env (never commit keys)
+python-dotenv>=1.2.4     # load API keys from .env (never commit keys)
 
 # --- UI (Milestone 2+) ---
 streamlit>=1.65.0        # the demo UI; deploys free to Streamlit Community Cloud
